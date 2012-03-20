@@ -26,7 +26,7 @@ require "trollop"
 class HttpResqueServer < Sinatra::Base
   cli_options = Trollop::options do
     opt :rakefile, "The location of your Rakefile which loads your Resque workers.", :default => "./Rakefile"
-    opt :port, "The port this server should listen on."
+    opt :port, "The port this server should listen on.", :type => :int
   end
 
   unless ENV["QUEUE"]

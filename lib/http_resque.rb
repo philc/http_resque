@@ -1,1 +1,1 @@
-require "howdy/version"
+require "http_resque/version"

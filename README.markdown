@@ -26,7 +26,8 @@ Optional command line arguments:
             -p: the port to listen on. Defaults to the $PORT environment variable, or 4568.
       --rakefile: the location of your Rakefile. The default is "./Rakefile".
 
-When run, http_resque starts a small web server and then invokes `rake resque:work` in a fork.
+You run http_resque in place of `rake resque:work`. When run, http_resque starts a small web server and then
+invokes `rake resque:work` in a fork.
 
 REST APIs for Resque
 --------------------

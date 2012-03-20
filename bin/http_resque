@@ -1,21 +1,20 @@
 #!/usr/bin/env ruby
-
+#
 # This wraps the Resque process with a thin HTTP API which enables you to manipulate jobs using HTTP requests
-# and run jobs synchronously, off-box, for the purposes of integration testing background jobs. This is
-# necessary because background jobs fail notoriously often in production and so they need integration -- not
-# unit -- tests. This helps you to cleanly write those integration tests.
+# and run jobs synchronously, for the purposes of integration testing background jobs. See the README for
+# more details of why this is awesome.
 #
 # Usage:
-# QUEUE=* http_resque -p 8080
-# The server uses port 4568 by default. Use the -p option to specify an alternate port, or set the PORT env
-# variable. You'll note that the QUEUE environment variable is used just like it is when running
-# `rake resque:work`.
-
+#   QUEUE=* http_resque
+#   Options:
+#          -p: the port to listen on. Defaults to the $PORT environment variable, or 4568.
+#  --rakefile: the location of your Rakefile. The default is "./Rakefile".
+#
 # Once it's started, you can access these URLs to manipulate jobs:
-#   GET    /queues/:queue/jobs
-#   DELETE /queues/:queue/jobs
-#   POST   /queues/:queue/jobs
-#   GET    /queues/:queue/result_of_oldest_job
+#   GET    /queues/:queue_name/jobs
+#   DELETE /queues/:queue_name/jobs
+#   POST   /queues/:queue_name/jobs
+#   GET    /queues/:queue_name/result_of_oldest_job
 
 require "sinatra/base"
 require "thin"
@@ -31,7 +30,7 @@ class HttpResqueServer < Sinatra::Base
   end
 
   unless ENV["QUEUE"]
-    puts "You must set the QUEUE env var, just as you would when running `rake resque:work`."
+    puts "You must set the QUEUE env var, just as you would when running `QUEUE=* rake resque:work`."
     exit 1
   end
 

@@ -77,6 +77,10 @@ Contribute
 ----------
 http_resque is pretty small and limited as is. If you need more CLI options or a different set of REST APIs, file an issue or send a pull request.
 
+When editing this gem, to test your changes, you can load your local copy of the gem in your project by using this in your Gemfile:
+
+gem "http_resque", :path => "~/path/to/http_resque"
+
 Related
 -------
 [remote_http_testing](https://github.com/ooyala/remote_http_testing) - a small library for making remote HTTP requests and response assertions in tests.

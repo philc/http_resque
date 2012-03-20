@@ -7,8 +7,9 @@
 #
 # Usage:
 # QUEUE=* http_resque -p 8080
-# The server uses port 4567 by default. Use -p to specify an alternate port.
-# You'll note that the QUEUE environment variable is used just like it is when running `rake resque:work`.
+# The server uses port 4568 by default. Use the -p option to specify an alternate port, or set the PORT env
+# variable. You'll note that the QUEUE environment variable is used just like it is when running
+# `rake resque:work`.
 
 # Once it's started, you can access these URLs to manipulate jobs:
 #   GET    /queues/:queue/jobs
@@ -21,20 +22,29 @@ require "thin"
 require "resque"
 require "rake"
 require "json"
+require "trollop"
 
-# Load the Rakefile which should in turn require all of their Resque job classes.
-# TODO(philc): The path to this Rakefile should be an argument.
-load "./Rakefile"
-
-class HttpResque < Sinatra::Base
-  settings.server = "thin"
+class HttpResqueServer < Sinatra::Base
+  cli_options = Trollop::options do
+    opt :rakefile, "The location of your Rakefile which loads your Resque workers.", :default => "./Rakefile"
+    opt :port, "The port this server should listen on."
+  end
 
   STDOUT.sync = STDERR.sync = true
+
+  begin
+    # Load their Rakefile, which should in turn require all of their Resque job classes.
+    load cli_options[:rakefile]
+  rescue LoadError
+    puts "Error loading Rakefile: #{cli_options[:rakefile]}. Give the path to your Rakefile using --rakefile."
+    exit 1
+  end
 
   # Run rake resque:work in a background process. It will exit when this process exits.
   fork { Rake::Task["resque:work"].invoke }
 
-  settings.port = ARGV.include?("-p") ? ARGV[ARGV.index("-p") + 1] : ENV["PORT"]
+  settings.port = cli_options[:port] || ENV["PORT"] || 4568
+  settings.server = "thin"
 
   get "/" do
     "http_resque is here."
@@ -79,5 +89,5 @@ class HttpResque < Sinatra::Base
 
   def json_body() @json_body ||= JSON.parse(request.body.read) rescue nil end
 
-  run! if app_file == $0
+  run! if File.basename(app_file) == File.basename($0)
 end

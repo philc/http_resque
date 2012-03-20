@@ -30,6 +30,11 @@ class HttpResqueServer < Sinatra::Base
     opt :port, "The port this server should listen on."
   end
 
+  unless ENV["QUEUE"]
+    puts "You must set the QUEUE env var, just as you would when running `rake resque:work`."
+    exit 1
+  end
+
   STDOUT.sync = STDERR.sync = true
 
   begin

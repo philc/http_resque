@@ -71,9 +71,8 @@ class HttpResqueServer < Sinatra::Base
   # - arguments: optional; an array of arguments for the Resque job.
   post "/queues/:queue/jobs" do
     halt(400, "Provide a valid JSON body.") unless json_body
-    klass = json_body["class"]
-    halt(400, "Specify a class.") unless klass
-    klass = Object.const_get(klass)
+    halt(400, "Specify a class.") unless json_body["class"]
+    klass = Object.const_get(json_body["class"])
     Resque.enqueue_to(params[:queue], klass, *json_body["arguments"])
     nil
   end

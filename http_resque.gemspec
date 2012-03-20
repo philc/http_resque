@@ -8,7 +8,10 @@ Gem::Specification.new do |s|
   s.authors     = ["Phil Crosby"]
   s.email       = ["phil.crosby@gmail.com"]
   s.homepage    = "http://github.com/philc/http_resque"
-  s.summary     = "A small HTTP wrapper around Resque, so you can schedule and test jobs over HTTP."
+  s.summary     = "Schedule and test Resque jobs using HTTP requests."
+  s.description = "http_resque helps you cleanly write integration tests for your Resque jobs. It's a thin " +
+      "HTTP API around the Resque daemon. With it you can manipulate the contents of the Resque queues " +
+      "using HTTP requests."
 
   s.rubyforge_project = "http_resque"
 
